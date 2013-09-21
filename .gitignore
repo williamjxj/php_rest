@@ -1,3 +1,4 @@
-composerlock
+composer.lock
 composer.phar
 vendor/
+.gitignore
