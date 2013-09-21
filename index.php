@@ -1,5 +1,8 @@
 <?php
-require "./vender/autoload.php";
+require "vendor/autoload.php";
+
+// require 'Slim/Slim.php';
+// \Slim\Slim::registerAutoloader();
 
 
 $app = new \Slim\Slim();

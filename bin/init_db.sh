@@ -1,5 +1,6 @@
 #!/bin/bash
 # William: create Database & Table for Rest API assignment.
+#  UNIQUE KEY username (username) USING BTREE
 
 mysql -u root --password="" -h localhost <<EOF
 
@@ -17,8 +18,7 @@ CREATE TABLE IF NOT EXISTS restapi (
   stat_name varchar(100) NOT NULL,
   stat_value int(11) NOT NULL,
   updated timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE NOW(),
-  PRIMARY KEY (id),
-  UNIQUE KEY username (username) USING BTREE
+  PRIMARY KEY (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
 EOF
