@@ -1,0 +1,12 @@
+points
+kills
+xp
+level
+missions_complete
+assist
+items_earned
+special_objects
+wins
+clear_time
+time_unused
+item_used
