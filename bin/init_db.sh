@@ -21,6 +21,10 @@ CREATE TABLE IF NOT EXISTS restapi (
   PRIMARY KEY (id)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 
+
+ALTER TABLE  restapi ADD INDEX (  username );
+ALTER TABLE  restapi ADD INDEX (  stat_name );
+
 EOF
 
 if [ $? -eq 0 ]; then
