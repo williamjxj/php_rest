@@ -51,4 +51,19 @@ for modifying purpose:
 $ git remote add origin git@github.com:williamjxj/php_rest.git
 $ git push -u origin master
 
+Test
+=====
+
+curl -i -X GET http://dixitruth.com/php_rest/getStats/user01
+curl -i -X GET http://dixitruth.com/php_rest/getStats/user88
+
+curl -i -X GET http://dixitruth.com/php_rest/getLeaderboard/points
+curl -i -X GET http://dixitruth.com/php_rest/getLeaderboard/kills
+
+curl -i -X POST -H 'Content-Type: application/json' -d '{"username": "Tester", "stat_name":"points", "stat_value":888}' http://dixitruth.com/php_rest/sendStat
+curl -i -X PUT -H 'Content-Type: application/json' -d '{"username": "user01", "stat_name": "points", "stat_value": 999}' http://dixitruth.com/php_rest/sendStat
+
+curl -v -H "Accept: application/json" -H "Content-type: application/json"  http://dixitruth.com/php_rest/getStats/user09/json
+curl -v -H "Accept: application/json" -H "Content-type: application/json"  http://dixitruth.com/php_rest/getLeaderboard/points/json
+curl -v -H "Accept: application/json" -H "Content-type: application/json" -X POST -d '{"username":"Tester1", "stat_name":"points", "stat_value":123}' http://dixitruth.com/php_rest/sendStat
 

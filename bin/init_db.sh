@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS restapi (
 
 ALTER TABLE  restapi ADD INDEX (  username );
 ALTER TABLE  restapi ADD INDEX (  stat_name );
+ALTER TABLE  restapi ADD UNIQUE ( username, stat_name);
 
 EOF
 

@@ -8,16 +8,74 @@
         <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css">
     </head>
     <body>
-
         <h1>REST API - PHP Slim + MySQL + jQuery </h1>
-		<div class="container">
-		  <div class="row">
-		    <div class="span2"></div>
-		    <div class="span10"></div>
-		  </div>
-		</div>
+        <div class="navbar">
+            <div class="navbar-inner">
+                <div class="container">
+                    <a class="brand" href="/">Compoundjs + MongoDB for REST APIs</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="container">
+            
+            <ul class="breadcrumb">
+    <li><a href="/">Home</a> <span class="divider">/</span></li>
+    <li class="active"><a href="/rests">rests</a> <span class="divider">/</span></li>
+</ul>
+
+<div class="page-header">
+    <h1>getStats(username)</h1>
+	<div class="alert">
+	   <button type="button" class="close" data-dismiss="alert">&times;</button> 
+      <strong>eg. http://localhost/getStats/tester01, curl -v -H "Accept: application/json" -H "Content-type: application/json"  http://localhost:3000/getStats/user09/json </strong>
+	</div>
+</div>
+
+<div class="row">
+    <div class="span12">
+        <p><a href="/rests/new" class="btn btn-primary"><i class="icon-plus icon-white"></i> New rest</a></>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span12">
+        
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>No.</th>
+                    <th>ID</th>
+                    <th>Username</th>
+                    <th>Stat Name</th>
+                    <th>Stat Value</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                
+                <tr>
+                    <td>1</td>
+                    <td><strong><a href="/rests/523f9340f983a9c356000001">#523f9340f983a9c356000001</a></strong></td>
+                    <td><strong><a href="/getStats/user01">user01</a></strong></td>
+                    <td><strong><a href="/getLeaderboard/points">points</a></strong></td>
+                    <td><strong>300</strong></td>
+                    <td>
+                        <a href="/rests/523f9340f983a9c356000001/edit" class="btn btn-mini"><i class="icon-edit"></i> Edit</a>
+                        <a href="/rests/523f9340f983a9c356000001" class="btn btn-mini btn-danger" data-remote="true" data-method="delete" data-jsonp="(function (u) {location.href = u;})"><i class="icon-remove icon-white"></i> Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        
+    </div>
+</div>
+            <hr />
+            <footer>
+                <p>&copy; William Jiang, 2013</p>
+            </footer>
+        </div>
         <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-
     </body>
 </html>
