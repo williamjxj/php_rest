@@ -1,44 +1,133 @@
 <?php
 require "vendor/autoload.php";
 
-// require 'Slim/Slim.php';
-// \Slim\Slim::registerAutoloader();
-
 $app = new \Slim\Slim();
 $app->config(array(
   'debug' => true,
   'templates.path' => './templates'
 ));
 
-echo $app->config['templates.path'];
-
 $h = new Helper();
 
-$app->get('/', function() {
+//1. homepage, show all:
+$app->get('/', function() use ($app) {
   global $h;
-  echo "slim framework works!\n";
-  echo "Total record is [" . $h->get_total() . "]\n";
+  $all = $h->get_all();
+  //echo "<pre>"; print_r($all); echo "</pre>";
+  $app->render('list.php', array('all'=>$all));
 });
 
-
-// http://dev.slimframework.com/phpdocs/classes/Slim.Http.Request.html
-/*
+/**
+http://dev.slimframework.com/phpdocs/classes/Slim.Http.Request.html
 if($app->request->isPost()) {
   //$app->request->post, $app->request->params() not work!
   $obj = json_decode($app->request->getBody());
   echo "<pre>"; print_r($obj->username); echo "</pre>";
   $app->post('/sendStat', 'sendStat');
+  $app->get('/name/:stat_name/', function($name) use ($app) { global $h; $app->render('', array());
 }
 */
 
+//2. sendStat
 $app->post('/sendStat', function() use ($app) {
-   echo "AAAAAAAAAAAAAA";
+  $t = $app->request->getBody();
+  if((is_string($t) && (is_object(json_decode($t)) || is_array(json_decode($t))))) {
+    $t = json_decode($t);
+    $user = $t->username;
+    $name = $t->stat_name;
+    $value = $t->stat_value;
+	$html = false;
+  }
+  else {
+    $user = $app->request->post('username');
+    $name = $app->request->post('stat_name');
+    $value = $app->request->post('stat_value');
+	$html = true;
+  }
+
+  // validate from server-side, for curl/web-service access.
+  if(empty($user)) {
+    echo '{"error":"sendStat need 3 post parameters - the first [ username ] is empty."}';
+    return false;
+  }
+  if(empty($name)) {
+    echo '{"error":"sendStat need 3 post parameters - the second [ stat_name ] is empty."}';
+    return false;
+  }
+  if(empty($value)) {
+    echo '{"error":"sendStat need 3 post parameters - the third [ stat_value ] is empty."}';
+    return false;
+  }
+  global $h;
+  $ret = $h->set_user($user, $name, $value);
+  if ($html) {
+    $all = $h->get_all();
+    $app->render('list.php', array('all'=>$all));
+  }
+  else {
+    echo $ret; //json.
+  }
 });
 
-$app->get('/getLeaderboard/:stat_name', 'getLeaderboard');
 
-$app->get('/getStats/:username', 'getStats');
+// 3. getLeaderboard
+$app->get('/getLeaderboard/:stat_name', function($name) use($app) {
+  if(empty($name)) {
+    echo '{"error":"getLeaderboard needs 1 parameter - [ stat_name ] is empty."}';
+    return false;
+  }
+  global $h;
+  $html = false;
+  if(preg_match("/-html$/", $name)) {
+    $name = preg_replace("/-html$/", '', $name);
+	$html = true;
+  }
+  $ret = $h->get_leaderboard($name);
+  if ($html) {
+    $app->render('list.php', array('all'=>$ret));
+  }
+  else {
+    echo $ret; //json.
+  }
+});
 
+// 4. getStats
+$app->get('/getStats/:username', function($user) use ($app) {
+  if(empty($user)) {
+    echo '{"error":"getStats needs 1 parameter - [ username ] is empty."}';
+    return false;
+  }
+  global $h;
+  $html = false;
+  if(preg_match("/-html$/", $user)) {
+    $user = preg_replace("/-html$/", '', $user);
+	$html = true;
+  }
+  $ret = $h->get_stats($user);
+  if ($html) {
+    $app->render('list.php', array('all'=>$ret));
+  }
+  else {
+    echo $ret; //json.
+  }
+});
+
+$app->get('/new', function() use ($app) {
+  $app->render('new.php');
+});
+$app->get('/editStat/:id', function($id) use ($app) {
+  global $h;
+  $ret = $h->get_1($id);
+  $app->render('edit.php', array('r'=>$ret));
+});
+
+
+$app->get('/delete/:id', function($id) use ($app) {
+  global $h;
+  $h->delete_1($id);
+});
+
+// 5. not found.
 $app->notFound(function() use ($app) {
   echo '{"message": {"error":"Wrong parameter, can not be identified."}}';
   $app->render('404.html');
@@ -46,56 +135,9 @@ $app->notFound(function() use ($app) {
 
 
 $app->run();
+exit;
 
-
-function sendStat() {
-  echo "BBBBBBBBBBBBBBBB";
-  return false;
-
-  $req = \Slim\Http\Request();
-  $t = json_decode($req->getBody());
-  $user = $t->username;
-  $name = $t->stat_name;
-  $value = $t->stat_value;
-
-  echo "AAAAAAAAAAAAAAAAA\n"; return false;
-
-  // validate from server-side, for curl/web-service access.
- if(empty($user)) {
-   echo '{"error":"sendStat need 3 post parameters - the first [ username ] is empty."}';
-   return false;
- }
- if(empty($name)) {
-   echo '{"error":"sendStat need 3 post parameters - the second [ stat_name ] is empty."}';
-   return false;
- }
- if(empty($value)) {
-   echo '{"error":"sendStat need 3 post parameters - the third [ stat_value ] is empty."}';
-   return false;
- }
- global $h;
- $h->set_user($user, $name, $value);
-}
-
-
-function getLeaderboard($name) {
-  if(empty($name)) {
-    echo '{"error":"getLeaderboard needs 1 parameter - [ stat_name ] is empty."}';
-    return false;
-  }
-  global $h;
-  $h->get_leaderboard($name);
-}
-
-function getStats($user) {
-  if(empty($user)) {
-    echo '{"error":"getStats needs 1 parameter - [ username ] is empty."}';
-    return false;
-  }
-  global $h;
-  $h->get_stats($user);
-}
-
+//////////////////////////////
 
 class Helper
 {
@@ -127,22 +169,21 @@ class Helper
   }
 
   public function set_user($username, $stat_name, $stat_value) {
+
     $user = mysql_real_escape_string(strtolower($username));
     $name = mysql_real_escape_string(strtolower($stat_name));
-    $value = int($stat_name);
+    $value = intval($stat_value);
+
 	 // add unique index: username + stat_name
     $sql = "insert into restapi(username, stat_name, stat_value) values " . 
-	 "('".$user."', '".$name."', ".$value." ON DUPLICATE KEY UPDATE stat_value=stat_value+".$value;
+	 "('".$user."', '".$name."', ".$value.") ON DUPLICATE KEY UPDATE stat_value=".$value;
 	// $sql = "UPDATE restapi SET stat_name='" . $name."', stat_value=" . $value .  " WHERE username='".$user."'";
 
-	echo $sql . "\n";
-	return false;
-
 	if(mysql_query($sql)) {
-	  echo '{"message": {"success":' . $user.$name.$value. '}}';
+	  return '{"message": {"success":' . $user.$name.$value. '}}';
 	}
 	else {
-	  echo '{"message": {"error":'. mysql_error(). '}}';
+	  return '{"message": {"error":'. mysql_error(). '}}';
 	}
   }
 
@@ -156,10 +197,10 @@ class Helper
 	}
 	mysql_free_result($res);
 	if(empty($ary)) {
-	  echo '{"message":{"text": "No corresponging record." }}';
+	  return '{"message":{"text": "No corresponging record." }}';
 	}
 	else {
-	  echo json_encode($ary);
+	  return json_encode($ary);
 	}
   }
 
@@ -174,11 +215,38 @@ class Helper
 	mysql_free_result($res);
 
 	if(empty($ary)) {
-	  echo '{"message":{"text": "No corresponging record." }}';
+	  return '{"message":{"text": "No corresponging record." }}';
 	}
 	else {
-	  echo json_encode($ary);
+	  return json_encode($ary);
 	}
   }
 
+  public function get_all() {
+    $ary = array();
+	$sql = "SELECT * FROM restapi ORDER BY updated DESC, username limit 0, 10";
+	$res = mysql_query($sql);
+	while($row = mysql_fetch_assoc($res)) {
+	  array_push($ary, $row);
+	}
+	mysql_free_result($res);
+    return json_encode($ary);
+  }
+
+  public function get_1($id) {
+    $ary = array();
+	$sql = "SELECT * FROM restapi where id=".$id;
+	$res = mysql_query($sql);
+	$row = mysql_fetch_assoc($res);
+	mysql_free_result($res);
+    return $row;
+  }
+
+  public function delete_1($id) {
+    $ary = array();
+	$sql = "DELETE FROM restapi where id=".$id;
+	if(mysql_query($sql)) {
+	  echo "Done";
+	}
+  }
 }
