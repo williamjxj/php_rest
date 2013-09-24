@@ -10,17 +10,9 @@
     </head>
     <body>
         <h1 align="center">REST API - PHP Slim + MySQL + jQuery </h1>
-        <div class="navbar">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="brand" href="/">PHP + Slim Framework + MySQL + jQuery REST APIs</a>
-                </div>
-            </div>
-        </div>
-
         <div class="container">
             
-            <ul class="breadcrumb">
+ <ul class="breadcrumb">
     <li><a href="/php_rest/">Home</a> <span class="divider">/</span></li>
     <li class="active"><a href="index.php">list all</a> <span class="divider">/</span></li>
 </ul>
@@ -31,7 +23,7 @@
 
 <div class="row">
     <div class="span12">
-        <p><a href="new" class="btn btn-primary"><i class="icon-plus icon-white"></i> New rest</a></>
+        <p><a href="new" class="btn btn-primary"><i class="icon-plus icon-white"></i> New rest</a>. <span class="alert">For performance reason, <a href="/php_rest/">default list 20 items</a>, use <a href="getAll">getAll</a> to list all record.</span></p>
     </div>
 </div>
 
@@ -90,7 +82,7 @@
      var that = $(this)
      e.preventDefault();
      e.stopPropagation();
-	 alert(e.target.href); //http://dixitruth.com/php_rest/delete/1002
+	 //alert(e.target.href); //http://dixitruth.com/php_rest/delete/1002
 	 $.get(e.target.href, function(data) {
 	   if(data == 'Done') {
 	     that.closest('tr').fadeOut(500);

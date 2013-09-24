@@ -12,8 +12,13 @@ $h = new Helper();
 //1. homepage, show all:
 $app->get('/', function() use ($app) {
   global $h;
+  $all_20 = $h->get_20();
+  $app->render('list.php', array('all'=>$all_20));
+});
+
+$app->get('/getAll', function() use ($app) {
+  global $h;
   $all = $h->get_all();
-  //echo "<pre>"; print_r($all); echo "</pre>";
   $app->render('list.php', array('all'=>$all));
 });
 
@@ -224,7 +229,18 @@ class Helper
 
   public function get_all() {
     $ary = array();
-	$sql = "SELECT * FROM restapi ORDER BY updated DESC, username limit 0, 10";
+	$sql = "SELECT * FROM restapi ORDER BY updated DESC, username;";
+	$res = mysql_query($sql);
+	while($row = mysql_fetch_assoc($res)) {
+	  array_push($ary, $row);
+	}
+	mysql_free_result($res);
+    return json_encode($ary);
+  }
+
+  public function get_20() {
+    $ary = array();
+	$sql = "SELECT * FROM restapi ORDER BY updated DESC, username limit 0, 20";
 	$res = mysql_query($sql);
 	while($row = mysql_fetch_assoc($res)) {
 	  array_push($ary, $row);
