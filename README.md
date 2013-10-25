@@ -12,3 +12,5 @@ API calling from browsers, curl all work, such as:
    http://dixitruth.com/php_rest/sendStat
 
 - curl -i -X GET http://dixitruth.com/php_rest/getLeaderboard/points
+
+demo: http://dixitruth.com/php_rest/
